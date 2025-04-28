@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Millennial Hub: Rise into leadership, wealth, and purpose with travel, wellness, and more.">
+  <title>Millennial Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+      overflow-x: hidden;
+    }
+    .dark-mode {
+      background-color: #2f004f;
+      color: #f5f5fc;
+    }
+    .hero {
+      background: linear-gradient(135deg, #4b0082, #1e90ff);
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #f5f5fc;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-overlay {
+      background: rgba(0, 0, 0, 0.3);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: linear-gradient(145deg, #f5f5fc, #e0e0e0);
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      transform-style: preserve-3d;
+    }
+    .dark-mode .card {
+      background: linear-gradient(145deg, #3a0066, #4b0082);
+    }
+    .card:hover, .card:focus-within {
+      transform: translateY(-10px) rotateY(5deg);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 105, 180, 0.3), transparent);
+      transition: 0.5s;
+    }
+    .card:hover::before, .card:focus-within::before {
+      left: 100%;
+    }
+    .retro-font {
+      font-family: 'Press Start 2P', cursive;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      font-size: clamp(4vw, 3rem);
+    }
+    .cta-button {
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      background-color: #ff69b4;
+      color: #f5f5fc;
+      padding: 16px 32px;
+      border-radius: 9999px;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+    }
+    .cta-button:hover, .cta-button:focus, .cta-button:active {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      background-color: #ffa500;
+    }
+    .animate-text {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .quiz-section {
+      background: linear-gradient(135deg, #4b0082, #1e90ff);
+      color: #f5f5fc;
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .chatbot, .live-chat-toggle {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: #ff69b4;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+    }
+    .chatbot:hover, .chatbot:focus, .live-chat-toggle:hover, .live-chat-toggle:focus {
+      transform: scale(1.1);
+    }
+    .chatbot-panel, .live-chat {
+      position: fixed;
+      bottom: 88px;
+      right: 16px;
+      background: #f5f5fc;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+    .dark-mode .chatbot-panel, .dark-mode .live-chat {
+      background: #3a0066;
+      color: #f5f5fc;
+    }
+    .chatbot-panel.active, .live-chat.active {
+      display: block;
+    }
+    .nav-link:hover, .nav-link:focus {
+      color: #1e90ff;
+    }
+    .footer-link:hover, .footer-link:focus {
+      color: #ff69b4;
+    }
+    .parallax {
+      transform: translateZ(0);
+    }
+    .vr-preview {
+      height: 200px;
+      background: #e0e0e0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .sustainability-badge {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: #ff69b4;
+      color: #f5f5fc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: clamp(0.75rem, 2vw, 0.875rem);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    .mood-selector {
+      background: #4b0082;
+      color: #f5f5fc;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+    .back-to-top {
+      position: fixed;
+      bottom: 80px;
+      right: 16px;
+      background: #ff69b4;
+      color: #f5f5fc;
+      padding: 12px;
+      border-radius: 50%;
+      display: none;
+    }
+    .back-to-top.visible {
+      display: block;
+    }
+    .section-divider {
+      height: 2px;
+      background: #ffa500;
+      margin: 32px 0;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body class="bg-4b0082">
+  <!-- Sustainability Badge -->
+  <!--<div class="sustainability-badge" aria-label="Carbon-neutral hosting">🌿 Carbon-Neutral</div>-->
+
+  <!-- Navigation -->
+  <nav class="bg-4b0082 text-f5f5fc p-4 sticky top-0 z-50 shadow-lg" role="navigation" aria-label="Main navigation">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-bold retro-font">Millennial Hub</h1>
+      <div class="flex items-center space-x-2 md:space-x-4">
+        <ul class="hidden md:flex space-x-4 lg:space-x-6">
+          <li><a href="#travel" class="nav-link transition-colors text-sm lg:text-base" aria-label="Travel section">Travel</a></li>
+          <li><a href="#health" class="nav-link transition-colors text-sm lg:text-base" aria-label="Health section">Health</a></li>
+          <li><a href="#entertainment" class="nav-link transition-colors text-sm lg:text-base" aria-label="Entertainment section">Entertainment</a></li>
+          <li><a href="#social" class="nav-link transition-colors text-sm lg:text-base" aria-label="Social Issues section">Social Issues</a></li>
+          <li><a href="#career" class="nav-link transition-colors text-sm lg:text-base" aria-label="Career section">Career</a></li>
+          <li><a href="#tech" class="nav-link transition-colors text-sm lg:text-base" aria-label="Technology section">Tech</a></li>
+          <li><a href="#lifestyle" class="nav-link transition-colors text-sm lg:text-base" aria-label="Lifestyle section">Lifestyle</a></li>
+          <li><a href="#community" class="nav-link transition-colors text-sm lg:text-base" aria-label="Community section">Community</a></li>
+        </ul>
+        <select id="languageToggle" class="p-2 rounded-lg bg-ff69b4 text-f5f5fc text-sm" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="zh">中文</option>
+        </select>
+        <button id="voiceNavToggle" class="p-2 rounded-full bg-ff69b4 text-f5f5fc hover:bg-ffa500" aria-label="Toggle voice navigation">🎙️</button>
+        <button id="darkModeToggle" class="p-2 rounded-full bg-ff69b4 text-f5f5fc hover:bg-ffa500" aria-label="Toggle dark mode">🌙</button>
+        <div class="md:hidden">
+          <button id="menuToggle" class="focus:outline-none" aria-label="Toggle mobile menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-y-0 right-0 w-3/4 bg-4b0082 text-f5f5fc p-4 z-50 md:hidden" role="navigation" aria-label="Mobile navigation">
+      <button id="closeMenu" class="absolute top-4 right-4 focus:outline-none" aria-label="Close mobile menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <ul class="space-y-4 mt-12">
+        <li><a href="#travel" class="block nav-link text-lg" aria-label="Travel section">Travel</a></li>
+        <li><a href="#health" class="block nav-link text-lg" aria-label="Health section">Health</a></li>
+        <li><a href="#entertainment" class="block nav-link text-lg" aria-label="Entertainment section">Entertainment</a></li>
+        <li><a href="#social" class="block nav-link text-lg" aria-label="Social Issues section">Social Issues</a></li>
+        <li><a href="#career" class="block nav-link text-lg" aria-label="Career section">Career</a></li>
+        <li><a href="#tech" class="block nav-link text-lg" aria-label="Technology section">Tech</a></li>
+        <li><a href="#lifestyle" class="block nav-link text-lg" aria-label="Lifestyle section">Lifestyle</a></li>
+        <li><a href="#community" class="block nav-link text-lg" aria-label="Community section">Community</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero parallax" role="banner" aria-label="Hero section">
+    <div class="hero-overlay">
+      <div class="container mx-auto px-4">
+        <h2 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 retro-font animate-text">Millennial Hub</h2>
+        <p class="text-lg sm:text-xl md:text-2xl mb-6 animate-text">Step into leadership, wealth, and purpose.</p>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+          <a href="#content" class="cta-button inline-block" aria-label="Explore content">Explore Now</a>
+          <a href="#signup" class="cta-button inline-block" aria-label="Sign up">Join Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mood Selector -->
+  <section class="mood-selector py-8 text-center" role="complementary" aria-label="Mood selector">
+    <div class="container mx-auto px-4">
+      <h3 class="text-2xl sm:text-3xl font-bold mb-4 retro-font">What’s Your Vibe Today?</h3>
+      <div class="flex flex-wrap justify-center gap-4">
+        <button id="moodAdventurous" class="cta-button px-6 py-3" aria-label="Select adventurous mood">Adventurous</button>
+        <button id="moodRelaxed" class="cta-button px-6 py-3" aria-label="Select relaxed mood">Relaxed</button>
+        <button id="moodFocused" class="cta-button px-6 py-3" aria-label="Select focused mood">Focused</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section id="content" class="container mx-auto py-8 md:py-16 bg-f5f5fc dark-mode:bg-2f004f" role="main" aria-label="Main content">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+      <!-- Travel -->
+      <div id="travel" class="card p-6 shadow-lg" role="article" aria-label="Travel section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Travel Adventures</h3>
+        <p class="text-sm sm:text-base">Plan solo trips, preview destinations in VR, or explore eco-friendly itineraries.</p>
+       <!-- <div class="vr-preview" id="travelVR" aria-label="VR destination preview"></div>-->
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Plan your trip">Plan Your Trip</a>
+      </div>
+      <!-- Health -->
+      <div id="health" class="card p-6 shadow-lg" role="article" aria-label="Health section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Health & Wellness</h3>
+        <p class="text-sm sm:text-base">Join VR wellness retreats, build AI-driven plans, or take mental health quizzes.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Start your wellness journey">Start Your Journey</a>
+      </div>
+      <!-- Entertainment -->
+      <div id="entertainment" class="card p-6 shadow-lg" role="article" aria-label="Entertainment section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Entertainment</h3>
+        <p class="text-sm sm:text-base">Curate ‘90s playlists, take pop culture quizzes, or join live event streams.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Explore entertainment">Get Nostalgic</a>
+      </div>
+      <!-- Social Issues -->
+      <div id="social" class="card p-6 shadow-lg" role="article" aria-label="Social Issues section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Social Issues</h3>
+        <p class="text-sm sm:text-base">Read climate reports, use sustainability calculators, or join virtual rallies.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Learn about social issues">Make a Difference</a>
+      </div>
+      <!-- Career -->
+      <div id="career" class="card p-6 shadow-lg" role="article" aria-label="Career section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Career & Education</h3>
+        <p class="text-sm sm:text-base">Access AI career coaching, virtual co-working spaces, or course comparisons.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Advance your career">Level Up</a>
+      </div>
+      <!-- Technology -->
+      <div id="tech" class="card p-6 shadow-lg" role="article" aria-label="Technology section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Technology</h3>
+        <p class="text-sm sm:text-base">Preview 3D gadgets, join AI webinars, or learn coding with tutorials.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Explore technology">Explore Tech</a>
+      </div>
+      <!-- Lifestyle -->
+      <div id="lifestyle" class="card p-6 shadow-lg" role="article" aria-label="Lifestyle section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Lifestyle</h3>
+        <p class="text-sm sm:text-base">Shop sustainable fashion, design small spaces, or plan finances mindfully.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Live sustainably">Live Sustainably</a>
+      </div>
+      <!-- Community -->
+      <div id="community" class="card p-6 shadow-lg" role="article" aria-label="Community section">
+        <h3 class="text-xl sm:text-2xl font-bold mb-4 retro-font">Community</h3>
+        <p class="text-sm sm:text-base">Join live chat rooms, share stories, or attend mentorship sessions.</p>
+        <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Join the community">Connect Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="section-divider mx-auto w-3/4"></div>
+
+  <!-- Interactive Quiz Section -->
+  <section class="quiz-section py-8 md:py-16 text-center" role="complementary" aria-label="Interactive quiz section">
+    <div class="container mx-auto px-4">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-6 retro-font">Discover Your Path to Rise</h3>
+      <p class="text-lg sm:text-xl mb-8">Take our AI-powered quiz to find your ideal travel destination, career path, or wellness plan!</p>
+      <button id="startQuiz" class="cta-button" aria-label="Start quiz">Start Quiz</button>
+      <div id="quizContainer" class="hidden max-w-2xl mx-auto mt-8">
+        <div id="quizQuestion" class="text-base sm:text-lg mb-4"></div>
+        <div id="quizOptions" class="space-y-4"></div>
+        <button id="nextQuestion" class="cta-button bg-1e90ff px-6 py-3 hover:bg-ffa500 mt-4" aria-label="Next question">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="section-divider mx-auto w-3/4"></div>
+
+  <!-- Video Showcase -->
+  <section class="bg-f5f5fc dark-mode:bg-2f004f py-8 md:py-16" role="complementary" aria-label="Video showcase section">
+    <div class="container mx-auto px-4">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-6 retro-font text-center text-4b0082 dark-mode:text-f5f5fc">Millennial Moments</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Millennial Travel Vlog" frameborder="0" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="video-container">
+          <iframe src="https://www.youtube.com/embed/9bZkp7q19f0" title="Millennial Wellness Tips" frameborder="0" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="section-divider mx-auto w-3/4"></div>
+
+  <!-- Community Stories -->
+  <section class="bg-f5f5fc dark-mode:bg-2f004f py-8 md:py-16" role="complementary" aria-label="Community stories section">
+    <div class="container mx-auto px-4">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-6 retro-font text-center text-4b0082 dark-mode:text-f5f5fc">Your Stories</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        <div class="card p-6 shadow-lg">
+          <h4 class="text-lg sm:text-xl font-bold mb-2">Solo Travel Triumph</h4>
+          <p class="text-sm sm:text-base">"Exploring Iceland in VR was life-changing. The Hub made it seamless!" – Sarah, 32</p>
+          <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Read Sarah's story">Read More</a>
+        </div>
+        <div class="card p-6 shadow-lg">
+          <h4 class="text-lg sm:text-xl font-bold mb-2">Career Pivot Success</h4>
+          <p class="text-sm sm:text-base">"The AI career coach helped me land a remote role I love!" – James, 38</p>
+          <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Read James's story">Read More</a>
+        </div>
+        <div class="card p-6 shadow-lg">
+          <h4 class="text-lg sm:text-xl font-bold mb-2">Sustainable Living</h4>
+          <p class="text-sm sm:text-base">"The Hub’s tips turned my apartment into a green oasis!" – Mia, 29</p>
+          <a href="#" class="text-1e90ff hover:text-ffa500 font-semibold text-sm sm:text-base mt-4 inline-block" aria-label="Read Mia's story">Read More</a>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <a href="#" class="cta-button" aria-label="Share your story">Share Your Story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divider -->
+  <div class="section-divider mx-auto w-3/4"></div>
+
+  <!-- Mentorship Network -->
+  <section class="bg-4b0082 py-8 md:py-16 text-center" role="complementary" aria-label="Mentorship network section">
+    <div class="container mx-auto px-4">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-6 retro-font text-f5f5fc">Millennial Mentorship Network</h3>
+      <p class="text-lg sm:text-xl mb-8 text-f5f5fc">Join live video sessions with mentors in leadership, wealth, and purpose.</p>
+      <a href="#" class="cta-button bg-ffa500 hover:bg-ff69b4" aria-label="Join mentorship network">Join Now</a>
+    </div>
+  </section>
+
+  <!-- Back to Top Button -->
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    </svg>
+  </a>
+
+  <!-- Live Chat -->
+  <div class="live-chat-toggle" id="liveChatToggle" aria-label="Open live chat" style="bottom: 88px;">
+    <svg class="w-6 h-6" fill="none" stroke="#f5f5fc" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+    </svg>
+  </div>
+  <div class="live-chat" id="liveChatPanel" role="dialog" aria-label="Live chat">
+    <div class="p-4">
+      <h4 class="text-lg font-bold mb-2 retro-font">Live Community Chat</h4>
+      <p class="mb-4 text-sm sm:text-base">Connect with millennials in real time!</p>
+      <div id="liveChatMessages" class="space-y-2 mb-4"></div>
+      <input type="text" id="liveChatInput" placeholder="Join the conversation..." class="w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e90ff text-sm sm:text-base" aria-label="Live chat input">
+    </div>
+  </div>
+
+  <!-- Chatbot -->
+  <div class="chatbot" id="chatbotToggle" aria-label="Open chatbot">
+    <svg class="w-6 h-6" fill="none" stroke="#f5f5fc" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    </svg>
+  </div>
+  <div class="chatbot-panel" id="chatbotPanel" role="dialog" aria-label="Chatbot">
+    <div class="p-4">
+      <h4 class="text-lg font-bold mb-2 retro-font">Millennial Assistant</h4>
+      <p class="mb-4 text-sm sm:text-base">Ask about travel, career, or wellness!</p>
+      <div id="chatMessages" class="space-y-2 mb-4"></div>
+      <input type="text" id="chatInput" placeholder="Type your question..." class="w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-1e90ff text-sm sm:text-base" aria-label="Chat input">
+    </div>
+  </div>
+
+  <!-- Newsletter Signup -->
+  <section id="signup" class="bg-f5f5fc dark-mode:bg-2f004f py-8 md:py-16 text-center" role="complementary" aria-label="Newsletter signup section">
+    <div class="container mx-auto px-4">
+      <h3 class="text-3xl sm:text-4xl font-bold mb-4 retro-font text-4b0082 dark-mode:text-f5f5fc">Stay Connected</h3>
+      <p class="text-lg sm:text-xl mb-6 text-4b0082 dark-mode:text-f5f5fc">Join our community for exclusive trends, insights, and events!</p>
+      <div class="max-w-md mx-auto">
+        <input type="email" placeholder="Enter your email" class="w-full p-4 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-1e90ff text-4b0082 text-sm sm:text-base" aria-label="Email address">
+        <button class="cta-button" aria-label="Subscribe to newsletter">Subscribe</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-4b0082 text-f5f5fc p-6 text-center" role="contentinfo" aria-label="Footer">
+    <div class="container mx-auto">
+      <div class="flex flex-wrap justify-center space-x-4 mb-4">
+        <a href="https://x.com" class="footer-link transition-colors text-sm sm:text-base" aria-label="Follow us on X">X</a>
+        <a href="https://instagram.com" class="footer-link transition-colors text-sm sm:text-base" aria-label="Follow us on Instagram">Instagram</a>
+        <a href="https://youtube.com" class="footer-link transition-colors text-sm sm:text-base" aria-label="Follow us on YouTube">YouTube</a>
+        <a href="https://tiktok.com" class="footer-link transition-colors text-sm sm:text-base" aria-label="Follow us on TikTok">TikTok</a>
+      </div>
+      <p class="text-sm sm:text-base">© 2025 Millennial Hub. All rights reserved.</p>
+      <p class="text-sm sm:text-base">
+        <a href="/about" class="footer-link" aria-label="About us">About Us</a> |
+        <a href="/contact" class="footer-link" aria-label="Contact us">Contact</a> |
+        <a href="/privacy" class="footer-link" aria-label="Privacy policy">Privacy Policy</a> |
+        <a href="/accessibility" class="footer-link" aria-label="Accessibility statement">Accessibility</a> |
+        <a href="/shop" class="footer-link" aria-label="Shop sustainable products">Shop</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+      darkModeToggle.setAttribute('aria-label', document.body.classList.contains('dark-mode') ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMenu = document.getElementById('closeMenu');
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+      menuToggle.setAttribute('aria-expanded', mobileMenu.classList.contains('active'));
+    });
+    closeMenu.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', false);
+    });
+
+    // Swipe Gesture for Mobile Menu
+    let touchStartX = 0;
+    let touchEndX = 0;
+    mobileMenu.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    mobileMenu.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        mobileMenu.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', false);
+      }
+    });
+
+    // Language Toggle (Placeholder)
+    const languageToggle = document.getElementById('languageToggle');
+    languageToggle.addEventListener('change', (e) => {
+      console.log(`Switch to ${e.target.value}`);
+      // Implement translation logic here
+    });
+
+    // Voice Navigation (Placeholder)
+    const voiceNavToggle = document.getElementById('voiceNavToggle');
+    voiceNavToggle.addEventListener('click', () => {
+      console.log('Voice navigation activated');
+      // Implement voice recognition (e.g., Web Speech API)
+    });
+
+    // Back to Top Button
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    });
+
+    // Mood Selector
+    const moodAdventurous = document.getElementById('moodAdventurous');
+    const moodRelaxed = document.getElementById('moodRelaxed');
+    const moodFocused = document.getElementById('moodFocused');
+    moodAdventurous.addEventListener('click', () => {
+      console.log('Mood: Adventurous - Loading travel content');
+      // Load travel-related content
+    });
+    moodRelaxed.addEventListener('click', () => {
+      console.log('Mood: Relaxed - Loading wellness content');
+      // Load wellness-related content
+    });
+    moodFocused.addEventListener('click', () => {
+      console.log('Mood: Focused - Loading career content');
+      // Load career-related content
+    });
+
+    // GSAP Animations
+    gsap.from(".animate-text", {
+      duration: 1,
+      opacity: 0,
+      y: 20,
+      stagger: 0.2,
+      ease: "power3.out"
+    });
+
+    gsap.utils.toArray(".card").forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 50,
+        rotationY: 10,
+        duration: 0.8,
+        delay: i * 0.1,
+        ease: "power3.out"
+      });
+    });
+
+    gsap.utils.toArray("section").forEach((section) => {
+      gsap.from(section, {
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+        },
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        ease: "power3.out"
+      });
+    });
+
+    // Parallax Effect
+    gsap.to(".parallax", {
+      scrollTrigger: {
+        trigger: ".hero",
+        scrub: true,
+        start: "top top",
+        end: "bottom top"
+      },
+      backgroundPosition: "50% 100%",
+      ease: "none"
+    });
+
+    // Simple VR Placeholder
+    //const vrPreview = document.getElementById('travelVR');
+   // vrPreview.innerHTML = '<p class="text-center pt-20 text-4b0082 dark-mode:text-f5f5fc text-sm sm:text-base">VR Destination Preview (Coming Soon)</p>';
+
+    // Quiz Logic
+    const quizData = [
+      {
+        question: "What's your ideal travel vibe?",
+        options: ["Solo adventure", "Group getaway", "Eco-conscious retreat", "City exploration"],
+        result: (answer) => `You'd love a ${answer.toLowerCase()}! Check out our VR travel guides!`
+      },
+      {
+        question: "What's your career goal?",
+        options: ["Work-life balance", "Leadership role", "Creative freedom", "Remote work"],
+        result: (answer) => `Perfect! Our AI career coach has tips for ${answer.toLowerCase()}!`
+      },
+      {
+        question: "What's your wellness focus?",
+        options: ["Mental health", "Fitness", "Nutrition", "Mindfulness"],
+        result: (answer) => `Great choice! Join our VR ${answer.toLowerCase()} retreats!`
+      }
+    ];
+
+    let currentQuestion = 0;
+    let userAnswers = [];
+
+    const startQuizButton = document.getElementById('startQuiz');
+    const quizContainer = document.getElementById('quizContainer');
+    const quizQuestion = document.getElementById('quizQuestion');
+    const quizOptions = document.getElementById('quizOptions');
+    const nextQuestionButton = document.getElementById('nextQuestion');
+
+    startQuizButton.addEventListener('click', () => {
+      quizContainer.classList.remove('hidden');
+      startQuizButton.classList.add('hidden');
+      loadQuestion();
+    });
+
+    function loadQuestion() {
+      const question = quizData[currentQuestion];
+      quizQuestion.textContent = question.question;
+      quizOptions.innerHTML = '';
+      question.options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.className = 'w-full p-3 bg-f5f5fc text-4b0082 rounded-lg hover:bg-ff69b4 hover:text-f5f5fc transition-colors dark-mode:bg-3a0066 dark-mode:text-f5f5fc text-sm sm:text-base';
+        button.setAttribute('aria-label', `Select ${option}`);
+        button.addEventListener('click', () => {
+          userAnswers.push(option);
+          nextQuestion();
+        });
+        quizOptions.appendChild(button);
+      });
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        quizContainer.innerHTML = `<p class="text-lg sm:text-2xl">${quizData[quizData.length - 1].result(userAnswers[userAnswers.length - 1])}</p><a href="#content" class="cta-button mt-4 inline-block" aria-label="Explore more content">Explore More</a>`;
+      }
+    }
+
+    nextQuestionButton.addEventListener('click', nextQuestion);
+
+    // Chatbot Logic
+    const chatbotToggle = document.getElementById('chatbotToggle');
+    const chatbotPanel = document.getElementById('chatbotPanel');
+    const chatInput = document.getElementById('chatInput');
+    const chatMessages = document.getElementById('chatMessages');
+
+    chatbotToggle.addEventListener('click', () => {
+      chatbotPanel.classList.toggle('active');
+      liveChatPanel.classList.remove('active');
+      chatbotToggle.setAttribute('aria-expanded', chatbotPanel.classList.contains('active'));
+    });
+
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && chatInput.value.trim()) {
+        const userMessage = chatInput.value;
+        chatMessages.innerHTML += `<p class="text-sm text-4b0082 dark-mode:text-f5f5fc"><strong>You:</strong> ${userMessage}</p>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        setTimeout(() => {
+          let botResponse = "I'm here to help! Try asking about travel tips, career advice, or wellness plans.";
+          if (userMessage.toLowerCase().includes('travel')) {
+            botResponse = "Planning a trip? Try our VR destination previews or AI itinerary planner!";
+          } else if (userMessage.toLowerCase().includes('career')) {
+            botResponse = "Looking to level up? Join our virtual co-working spaces or AI career coach!";
+          } else if (userMessage.toLowerCase().includes('wellness')) {
+            botResponse = "Prioritizing health? Explore our VR wellness retreats or mental health quizzes!";
+          }
+          chatMessages.innerHTML += `<p class="text-sm text-4b0082 dark-mode:text-f5f5fc"><strong>Bot:</strong> ${botResponse}</p>`;
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 500);
+
+        chatInput.value = '';
+      }
+    });
+
+    // Live Chat Logic
+    const liveChatToggle = document.getElementById('liveChatToggle');
+    const liveChatPanel = document.getElementById('liveChatPanel');
+    const liveChatInput = document.getElementById('liveChatInput');
+    const liveChatMessages = document.getElementById('liveChatMessages');
+
+    liveChatToggle.addEventListener('click', () => {
+      liveChatPanel.classList.toggle('active');
+      chatbotPanel.classList.remove('active');
+      liveChatToggle.setAttribute('aria-expanded', liveChatPanel.classList.contains('active'));
+    });
+
+    liveChatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && liveChatInput.value.trim()) {
+        const userMessage = liveChatInput.value;
+        liveChatMessages.innerHTML += `<p class="text-sm text-4b0082 dark-mode:text-f5f5fc"><strong>You:</strong> ${userMessage}</p>`;
+        liveChatMessages.scrollTop = liveChatMessages.scrollHeight;
+        liveChatInput.value = '';
+        // Implement real-time chat logic (e.g., WebSocket) here
+      }
+    });
+  </script>
+</body>
+</html>
